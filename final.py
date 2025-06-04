@@ -32,23 +32,12 @@ fonts_dir = Path("fonts")
 fonts_dir.mkdir(exist_ok=True)
 
 # 字體來源（Google Noto Sans TC）
-noto_font_url = "https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/TraditionalChinese/NotoSansTC-Regular.otf"
-font_file = "NotoSansTC-Regular.otf"
-font_path = fonts_dir / font_file
+from pathlib import Path
+import matplotlib.font_manager as fm
 
-# 自動下載字體
-if not font_path.exists():
-    try:
-        with urllib.request.urlopen(noto_font_url) as response:
-            with open(font_path, "wb") as f:
-                f.write(response.read())
-    except Exception as e:
-        st.error(f"⚠️ 字體下載失敗：{e}")
-        font_prop = None
-    else:
-        font_prop = fm.FontProperties(fname=str(font_path))
-else:
-    font_prop = fm.FontProperties(fname=str(font_path))
+# 使用已上傳的字體檔案
+font_path = Path("NotoSansTC-ExtraBold.ttf")  # 字體就在根目錄
+font_prop = fm.FontProperties(fname=str(font_path)) if font_path.exists() else None
 
 # 一堆語言互相切換的對照表
 lang_options = {
