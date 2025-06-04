@@ -1,6 +1,6 @@
 streamlit
 pandas
-matplotlib
+matplotlib==3.7.2
 requests
 Pillow
 opencc-python-reimplemented
