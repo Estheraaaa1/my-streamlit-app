@@ -490,7 +490,7 @@ with tab1:
         if potato_count > 0:
             potatoes = "🥔" * potato_count
         else:
-            potatoes = "0️⃣"  # 你也可以換成其他的 emoji        
+            potatoes = "0️⃣"      
         st.subheader(f"{text[lang]['potato_score']}{potatoes}")
         st.caption(text[lang]["potato_hint"])
         st.write(f"💬 {message}")
