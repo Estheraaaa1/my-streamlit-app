@@ -14,42 +14,6 @@ from opencc import OpenCC
 
 cc = OpenCC('s2t')  # 簡體轉繁體
 st.set_page_config(page_title="canibeacouchpotatotoday?", layout="centered")
-
-st.markdown("""
-    <style>
-        /* tabs 樣式 */
-        button[role="tab"] {
-            font-size: 22px !important;
-            font-weight: bold !important;
-        }
-        .stTabs [aria-selected="true"] {
-            color: #d6336c !important;
-            border-bottom: 3px solid #ff4b4b !important;
-        }
-
-        /* 限制頁面寬度與置中 */
-        .block-container, .css-18e3th9 {
-            padding-top: 1rem;
-            padding-bottom: 2rem;
-            max-width: 800px;
-            margin: auto;
-        }
-
-        /* 元件與標題樣式 */
-        .stSelectbox, .stTextInput, .stSlider {
-            font-size: 0.9rem;
-        }
-
-        h1, h2, h3 {
-            font-size: 1.5rem;
-            text-align: center;
-        }
-
-        section.main > div {
-            padding-top: 0rem;
-        }
-    </style>
-""", unsafe_allow_html=True)
 # ========== 初始資料檢查 ==========
 csv_path = "mood_log.csv"
 
@@ -228,11 +192,15 @@ text = {
     }
 }
 # ========== 封面圖 ==========
-image = Image.open("cover.jpg")
-with st.container():
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.image(image, caption=text[lang]["title"], width=900)
+st.markdown(
+    f"""
+    <div style="text-align:center;">
+        <img src="https://raw.githubusercontent.com/Estheraaaa1/my-streamlit-app/main/cover.jpg" width="500"/>
+        <p style="font-size:18px;">{text[lang]["title"]}</p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # ========== 分頁設計 ==========
 tab1, tab2, tab3 = st.tabs([
