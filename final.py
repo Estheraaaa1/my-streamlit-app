@@ -656,6 +656,8 @@ with tab2:
 
 
 # ========== tab3: 心情趨勢 ==========
+from datetime import datetime
+
 with tab3:
     st.markdown(f"### {text[lang]['trend_title']}")
 
@@ -669,6 +671,7 @@ with tab3:
                 st.error("❌ mood_log.csv 檔案格式錯誤，找不到 '日期' 或 '心情分數' 欄位。")
                 st.write("📋 目前欄位：", df.columns.tolist())
             else:
+                # 轉換欄位格式
                 df["日期"] = pd.to_datetime(df["日期"], errors="coerce")
                 df["心情分數"] = pd.to_numeric(df["心情分數"], errors="coerce")
                 df = df.dropna(subset=["日期", "心情分數"])
@@ -676,16 +679,18 @@ with tab3:
                 if df.empty:
                     st.info(text[lang]["no_data"])
                 else:
-                    # 月份選擇器
+                    # 加入月份欄位
                     df["月份"] = df["日期"].dt.strftime("%Y-%m")
                     today = datetime.today()
                     this_month = today.strftime("%Y-%m")
                     last_month = (today.replace(day=1) - pd.Timedelta(days=1)).strftime("%Y-%m")
-                    unique_months = sorted(set(df["月份"].dropna().unique().tolist() + [this_month, last_month]), reverse=True)
+                    unique_months = sorted(set(df["月份"].dropna().tolist() + [this_month, last_month]), reverse=True)
+
                     selected_month = st.selectbox(text[lang]["month_select"], unique_months)
 
-                    # 過濾該月資料
+                    # 過濾選定月份資料
                     month_df = df[df["月份"] == selected_month]
+
                     if month_df.empty:
                         st.info(text[lang]["no_data"])
                     else:
@@ -694,8 +699,9 @@ with tab3:
 
                         fig, ax = plt.subplots(figsize=(6, 3))
                         ax.plot(labels, scores, marker="o", linestyle="-", color="#4B8BBE", linewidth=2)
+
                         for x, y in zip(labels, scores):
-                            ax.text(x, y + 0.2, f"{y:.0f}", ha='center', fontsize=9, color="#333")
+                            ax.text(x, y + 0.2, f"{y:.0f}", ha='center', fontsize=9, color="#333", fontproperties=font_prop)
 
                         ax.set_title(
                             text[lang]["mood_trend_chart"].format(selected_month),
@@ -703,7 +709,6 @@ with tab3:
                         )
                         ax.set_ylabel(text[lang]["y_label"], fontproperties=font_prop, fontsize=12)
                         ax.set_xlabel(text[lang]["x_label"], fontproperties=font_prop, fontsize=12)
-                        ax.text(x, y + 0.2, f"{y:.0f}", ha='center', fontsize=9, color="#333", fontproperties=font_prop)
                         ax.set_ylim(0, 11)
                         ax.grid(True, linestyle="--", alpha=0.5)
                         st.pyplot(fig)
