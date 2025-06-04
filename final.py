@@ -651,7 +651,6 @@ with tab2:
 
 
 # ========== tab3: 心情趨勢 ==========
-
 with tab3:
     st.markdown(f"### {text[lang]['trend_title']}")
 
@@ -699,6 +698,7 @@ with tab3:
                         )
                         ax.set_ylabel(text[lang]["y_label"], fontproperties=font_prop, fontsize=12)
                         ax.set_xlabel(text[lang]["x_label"], fontproperties=font_prop, fontsize=12)
+                        ax.text(x, y + 0.2, f"{y:.0f}", ha='center', fontsize=9, color="#333", fontproperties=font_prop)
                         ax.set_ylim(0, 11)
                         ax.grid(True, linestyle="--", alpha=0.5)
                         st.pyplot(fig)
