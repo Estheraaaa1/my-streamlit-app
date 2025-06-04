@@ -36,7 +36,7 @@ from pathlib import Path
 import matplotlib.font_manager as fm
 
 # 使用已上傳的字體檔案
-font_path = Path("NotoSansTC-ExtraBold.ttf")  # 字體就在根目錄
+font_path = Path("NotoSansTC-ExtraBold.ttf")
 font_prop = fm.FontProperties(fname=str(font_path)) if font_path.exists() else None
 
 # 一堆語言互相切換的對照表
@@ -281,6 +281,7 @@ with tab1:
     reverse_style_labels = {v: k for k, v in style_labels[lang].items()}
     # 設定 emoji_style_display 預設值（如 session_state 裡有，但不在 display_labels 內，就重設）
     default_style = display_labels[0]
+
 # 如果 emoji_style_display 不存在，設定初始值
     if "emoji_style_display" not in st.session_state:
         st.session_state["emoji_style_display"] = display_labels[0]
@@ -293,6 +294,7 @@ with tab1:
         index=display_labels.index(st.session_state["emoji_style_display"]) if st.session_state["emoji_style_display"] in display_labels else 0,
         key="emoji_style_display"
     )
+    
     # --- 根據選擇的風格取得 emoji 列表 ---
     emoji_style_key = reverse_style_labels[st.session_state["emoji_style_display"]]
     emoji_options = emoji_styles[emoji_style_key]
@@ -418,20 +420,20 @@ with tab1:
             icon = weather_icons.get(lang, {}).get(weather_desc, "🌈")
             st.write(f"{text[lang]['weather']}：{weather_desc}，{temp}°C")
 
-        # 🔮 出門指數計算
+        # 出門指數計算
         score = 0
-        score += mood_score * 5  # 把心情當成最重要的，乘以 5
-        if "雨" not in weather_desc:
+        score += mood_score * 5  # 把心情當成最重要的，所以要乘以 5！
+        if "雨" not in weather_desc: #政大生標準很低，不下雨就很開心
             score += 30
-        if important_event:
+        if important_event: #有重要場合還是要出門、、、
             score += 30
-        if early_class:
+        if early_class: #早八bad 扣二十分
             score -= 20
-        if 22 <= temp <= 30:
+        if 22 <= temp <= 30: #22~30應該是最舒服的天氣？
             score += 15
-        score = min(score, 100)
+        score = min(score, 100) #滿分100分
 
-        # 🎬 動畫 & 建議語
+        # 動畫 & 心靈雞湯語錄
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         gif_box = st.empty()
 
@@ -569,7 +571,7 @@ with tab1:
         st.success(random.choice(quote_pool[lang]))
 
         
-        # ✅ 決定好 message 後再建立 df
+        # 決定好 message 後再建立 df
         # 建立原始 DataFrame（用中文欄位名）
         log = {
             "日期": [datetime.today().strftime("%Y-%m-%d")],
@@ -653,11 +655,8 @@ with tab2:
         else:
             st.warning("⚠️ 找不到翻譯後的天氣欄位，請檢查資料。")
 
-
-
 # ========== tab3: 心情趨勢 ==========
 from datetime import datetime
-
 with tab3:
     st.markdown(f"### {text[lang]['trend_title']}")
 
