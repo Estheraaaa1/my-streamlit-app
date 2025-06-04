@@ -633,7 +633,7 @@ with tab2:
         st.write(text[lang]["records_loaded"].format(len(df)))
 
         # 平均心情一定可以計算
-        avg_mood = round(df["心情分數"].mean(), 1)
+        avg_mood = round(df_display[text[lang]["column_mood"]].mean(), 1)
         st.markdown(f"**{text[lang]['avg_mood']}：** {avg_mood} {text[lang]['unit_score']}")
         
         # 安全檢查：確認翻譯的欄位是否存在於 df_display 中
