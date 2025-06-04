@@ -13,7 +13,7 @@ from streamlit_extras.let_it_rain import rain
 from opencc import OpenCC
 
 cc = OpenCC('s2t')  # 簡體轉繁體
-st.set_page_config(page_title="canibeacouchpotatotoday?", layout="wide")
+st.set_page_config(page_title="canibeacouchpotatotoday?", layout="center")
 
 st.markdown("""
     <style>
