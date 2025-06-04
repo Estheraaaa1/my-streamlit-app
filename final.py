@@ -1,4 +1,4 @@
-#import 有的沒的區
+#import 有的沒的東西
 import streamlit as st
 import time
 import requests
@@ -12,12 +12,16 @@ import matplotlib.font_manager as fm
 from streamlit_extras.let_it_rain import rain
 from opencc import OpenCC
 
-cc = OpenCC('s2t')  # 簡體轉繁體
+# 簡體轉繁體
+cc = OpenCC('s2t')  
+
+# 網頁標題
 st.set_page_config(page_title="canibeacouchpotatotoday?", layout="centered")
-# ========== 初始資料檢查 ==========
+
+# 初始資料檢查 
 csv_path = "mood_log.csv"
 
-# ========== 中文字型處理 ==========
+# 中文字型處理 
 fallback_fonts = [
     "/System/Library/Fonts/STHeiti Medium.ttc",
     "/Library/Fonts/Arial Unicode.ttf",
@@ -27,20 +31,21 @@ fallback_fonts = [
 font_path = next((f for f in fallback_fonts if os.path.exists(f)), None)
 font_prop = fm.FontProperties(fname=font_path) if font_path else None
 
-# ========== 語言 ==========
+# 一堆語言互相切換的對照表
 lang_options = {
     "中文": "zh",
     "English": "en",
     "Čeština": "cz"
 }
 lang_display = st.sidebar.selectbox("🌐 語言 / Language / Jazyk", list(lang_options.keys()))
-lang = lang_options[lang_display]  # ⬅️ 要使用這個轉換後的 lang
+lang = lang_options[lang_display]  
 
+#放幾個主要的城市翻譯
 city_translation = {
     "台北": {"English": "Taipei", "Čeština": "Tchaj-pej"},
     "台中": {"English": "Taichung", "Čeština": "Tchaj-čung"},
     "台南": {"English": "Tainan", "Čeština": "Tchaj-nan"},
-    # 可依需求增加其他城市
+    
 }
 
 weather_translation = {
@@ -191,7 +196,7 @@ text = {
 
     }
 }
-# ========== 封面圖 ==========
+# 封面圖
 st.markdown(
     f"""
     <div style="text-align:center;">
@@ -202,7 +207,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ========== 分頁設計 ==========
+# 分頁設計 
 tab1, tab2, tab3 = st.tabs([
     text[lang]["tab1"],
     text[lang]["tab2"],
