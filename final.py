@@ -21,15 +21,18 @@ st.set_page_config(page_title="canibeacouchpotatotoday?", layout="centered")
 # 初始資料檢查 
 csv_path = "mood_log.csv"
 
-# 中文字型處理 
+# 中文字型處理
+import matplotlib.font_manager as fm  # 確保這行也在上面
+
 fallback_fonts = [
-    "/System/Library/Fonts/STHeiti Medium.ttc",
-    "/Library/Fonts/Arial Unicode.ttf",
-    "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
-    "C:/Windows/Fonts/msjh.ttc"
+    "/System/Library/Fonts/STHeiti Medium.ttc",          # macOS
+    "/Library/Fonts/Arial Unicode.ttf",                  # macOS 通用
+    "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",  # Linux
+    "C:/Windows/Fonts/msjh.ttc"                          # Windows
 ]
 font_path = next((f for f in fallback_fonts if os.path.exists(f)), None)
 font_prop = fm.FontProperties(fname=font_path) if font_path else None
+
 
 # 一堆語言互相切換的對照表
 lang_options = {
@@ -644,7 +647,7 @@ with tab2:
         else:
             st.markdown("⚠️ 找不到天氣欄位，請檢查資料或翻譯設定。")
 
-# ========== tab3: 心情趨勢 ==========
+# ========== tab3: 心情趨勢 ==========ㄌ
 with tab3:
     st.markdown(f"### {text[lang]['trend_title']}")
 
