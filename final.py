@@ -22,20 +22,33 @@ st.set_page_config(page_title="canibeacouchpotatotoday?", layout="centered")
 csv_path = "mood_log.csv"
 
 # 中文字型處理
-import matplotlib.font_manager as fm  # ✅ 這行可以保留
+import os
+import urllib.request
+import matplotlib.font_manager as fm
+from pathlib import Path
 
-fallback_fonts = [
-    "/System/Library/Fonts/STHeiti Medium.ttc",          
-    "/Library/Fonts/Arial Unicode.ttf",                  
-    "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",  
-    "C:/Windows/Fonts/msjh.ttc"
-]
-font_path = next((f for f in fallback_fonts if os.path.exists(f)), None)
-font_prop = fm.FontProperties(fname=font_path) if font_path else None
+# 建立 fonts 資料夾
+fonts_dir = Path("fonts")
+fonts_dir.mkdir(exist_ok=True)
 
+# 字體來源（Google Noto Sans TC）
+noto_font_url = "https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/TraditionalChinese/NotoSansTC-Regular.otf"
+font_file = "NotoSansTC-Regular.otf"
+font_path = fonts_dir / font_file
 
-# 設定給 matplotlib 用的字體
-font_prop = fm.FontProperties(fname=str(font_path))
+# 自動下載字體
+if not font_path.exists():
+    try:
+        with urllib.request.urlopen(noto_font_url) as response:
+            with open(font_path, "wb") as f:
+                f.write(response.read())
+    except Exception as e:
+        st.error(f"⚠️ 字體下載失敗：{e}")
+        font_prop = None
+    else:
+        font_prop = fm.FontProperties(fname=str(font_path))
+else:
+    font_prop = fm.FontProperties(fname=str(font_path))
 
 # 一堆語言互相切換的對照表
 lang_options = {
