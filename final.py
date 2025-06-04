@@ -650,74 +650,60 @@ with tab2:
 
 
 
-# ========== tab3: 心情趨勢 ==========ㄌ
+# ========== tab3: 心情趨勢 ==========
+
 with tab3:
     st.markdown(f"### {text[lang]['trend_title']}")
 
-    if os.path.exists(csv_path):
+    # 先檢查檔案是否存在與不為空
+    if os.path.exists(csv_path) and os.stat(csv_path).st_size > 0:
         try:
             df = pd.read_csv(csv_path)
+
+            # 確認關鍵欄位存在
             if "日期" not in df.columns or "心情分數" not in df.columns:
                 st.error("❌ mood_log.csv 檔案格式錯誤，找不到 '日期' 或 '心情分數' 欄位。")
-                st.write("📋 CSV 欄位：", df.columns.tolist())
+                st.write("📋 目前欄位：", df.columns.tolist())
             else:
                 df["日期"] = pd.to_datetime(df["日期"], errors="coerce")
                 df["心情分數"] = pd.to_numeric(df["心情分數"], errors="coerce")
                 df = df.dropna(subset=["日期", "心情分數"])
 
-                if not df.empty:
-                    avg_mood = round(df["心情分數"].mean(), 1)
-                    st.markdown(f"**{text[lang]['avg_mood']}** {avg_mood} {text[lang]['unit_score']}")
-
-                df["月份"] = df["日期"].dt.strftime("%Y-%m")
-                from datetime import datetime
-                today = datetime.today()
-                this_month = today.strftime("%Y-%m")
-                last_month = (today.replace(day=1) - pd.Timedelta(days=1)).strftime("%Y-%m")
-
-                # 原始資料月份 + 保底月份
-                df["月份"] = df["日期"].dt.strftime("%Y-%m")
-                existing_months = df["月份"].dropna().unique().tolist()
-                unique_months = sorted(set(existing_months + [this_month, last_month]), reverse=True)                
-                selected_month = st.selectbox(text[lang]["month_select"], unique_months)
-                month_df = df[df["月份"] == selected_month]
-
-                if month_df.empty:
+                if df.empty:
                     st.info(text[lang]["no_data"])
                 else:
-                    labels = month_df["日期"].dt.strftime('%m/%d')
-                    scores = month_df["心情分數"]
+                    # 月份選擇器
+                    df["月份"] = df["日期"].dt.strftime("%Y-%m")
+                    today = datetime.today()
+                    this_month = today.strftime("%Y-%m")
+                    last_month = (today.replace(day=1) - pd.Timedelta(days=1)).strftime("%Y-%m")
+                    unique_months = sorted(set(df["月份"].dropna().unique().tolist() + [this_month, last_month]), reverse=True)
+                    selected_month = st.selectbox(text[lang]["month_select"], unique_months)
 
-                    fig, ax = plt.subplots(figsize=(6, 3))
-                    ax.plot(labels, scores, marker="o", linestyle="-", color="#4B8BBE", linewidth=2)
-                    for x, y in zip(labels, scores):
-                        ax.text(x, y + 0.2, f"{y:.0f}", ha='center', fontsize=9, color="#333333", fontproperties=font_prop)
+                    # 過濾該月資料
+                    month_df = df[df["月份"] == selected_month]
+                    if month_df.empty:
+                        st.info(text[lang]["no_data"])
+                    else:
+                        labels = month_df["日期"].dt.strftime('%m/%d')
+                        scores = month_df["心情分數"]
 
-                    ax.set_title(
-                        text[lang]["mood_trend_chart"].format(selected_month),
-                        fontproperties=font_prop, fontsize=14, fontweight="bold"
-                    )
-                    ax.set_ylabel(text[lang]["y_label"], fontproperties=font_prop, fontsize=12)
-                    ax.set_xlabel(text[lang]["x_label"], fontproperties=font_prop, fontsize=12)
-                    ax.set_ylim(0, 11)
-                    ax.grid(True, linestyle="--", alpha=0.5)
-                    st.pyplot(fig)
+                        fig, ax = plt.subplots(figsize=(6, 3))
+                        ax.plot(labels, scores, marker="o", linestyle="-", color="#4B8BBE", linewidth=2)
+                        for x, y in zip(labels, scores):
+                            ax.text(x, y + 0.2, f"{y:.0f}", ha='center', fontsize=9, color="#333")
+
+                        ax.set_title(
+                            text[lang]["mood_trend_chart"].format(selected_month),
+                            fontproperties=font_prop, fontsize=14, fontweight="bold"
+                        )
+                        ax.set_ylabel(text[lang]["y_label"], fontproperties=font_prop, fontsize=12)
+                        ax.set_xlabel(text[lang]["x_label"], fontproperties=font_prop, fontsize=12)
+                        ax.set_ylim(0, 11)
+                        ax.grid(True, linestyle="--", alpha=0.5)
+                        st.pyplot(fig)
 
         except Exception as e:
             st.error(f"⚠️ 發生錯誤：{e}")
     else:
-        st.info(text[lang]["no_records"])
-        
-# 最終補齊 CSV 測試資料
-data = {
-    "日期": ["2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30", "2025-05-31"],
-    "城市": ["台北", "台北", "台北", "台北", "台北"],
-    "心情分數": [5, 1, 10, 8, 3],
-    "有行程": [False, True, True, True, False],
-    "天氣": ["晴", "晴", "晴", "多雲", "小雨"],
-    "氣溫": [25, 27, 28, 26, 24],
-    "出門指數": [55, 40, 95, 85, 30],
-    "系統建議": ["今天不出門也沒瓜西...", "請躺平", "給我出門😠🤜", "給我出門😠🤜", "不出門也行"]
-}
-df = pd.DataFrame(data)
-df.to_csv("mood_log.csv", index=False)
+        st.info("⚠️ 尚未有任何心情記錄，請先在判斷區輸入資料喔！")
