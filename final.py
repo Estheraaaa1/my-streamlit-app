@@ -13,22 +13,43 @@ from streamlit_extras.let_it_rain import rain
 from opencc import OpenCC
 
 cc = OpenCC('s2t')  # 簡體轉繁體
-st.set_page_config(page_title="amiacouchpotato?", layout="wide")
+st.set_page_config(page_title="canibeacouchpotatotoday?", layout="wide")
+
 st.markdown("""
     <style>
-    button[role="tab"] {
-        font-size: 22px !important;
-        font-weight: bold !important;
-    }
+        /* tabs 樣式 */
+        button[role="tab"] {
+            font-size: 22px !important;
+            font-weight: bold !important;
+        }
+        .stTabs [aria-selected="true"] {
+            color: #d6336c !important;
+            border-bottom: 3px solid #ff4b4b !important;
+        }
 
-    /* 選中的 tab 加上紅色 underline 和字體顏色 */
-    .stTabs [aria-selected="true"] {
-        color: #d6336c !important;  /* 深粉紅 */
-        border-bottom: 3px solid #ff4b4b !important;  /* 下底線顏色 */
-    }
+        /* 限制頁面寬度與置中 */
+        .block-container, .css-18e3th9 {
+            padding-top: 1rem;
+            padding-bottom: 2rem;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        /* 元件與標題樣式 */
+        .stSelectbox, .stTextInput, .stSlider {
+            font-size: 0.9rem;
+        }
+
+        h1, h2, h3 {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        section.main > div {
+            padding-top: 0rem;
+        }
     </style>
 """, unsafe_allow_html=True)
-
 # ========== 初始資料檢查 ==========
 csv_path = "mood_log.csv"
 
