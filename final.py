@@ -635,9 +635,13 @@ with tab2:
         st.dataframe(df_display.tail(7))  # ✅ 無論語言都會顯示
         st.write(text[lang]["records_loaded"].format(len(df)))
 
-        # 平均心情一定可以計算
-        avg_mood = round(df_display[text[lang]["column_mood"]].mean(), 1)
+        # ✅ 用原始 df（原始欄位名為「心情分數」）計算平均
+        avg_mood = round(df["心情分數"].mean(), 1)
         st.markdown(f"**{text[lang]['avg_mood']}：** {avg_mood} {text[lang]['unit_score']}")
+        
+        # ✅ 用翻譯過的欄位名稱找出最常見天氣（df_display 是 rename 後的）
+        most_common_weather = df_display[text[lang]["column_weather"]].mode()[0]
+        st.markdown(f"**{text[lang]['common_weather']}：** {most_common_weather}")
         
         # 安全檢查：確認翻譯的欄位是否存在於 df_display 中
         weather_col = text[lang]["column_weather"]
