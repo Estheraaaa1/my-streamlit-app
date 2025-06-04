@@ -635,21 +635,20 @@ with tab2:
         st.dataframe(df_display.tail(7))  # ✅ 無論語言都會顯示
         st.write(text[lang]["records_loaded"].format(len(df)))
 
-        # ✅ 用原始 df（原始欄位名為「心情分數」）計算平均
-        avg_mood = round(df["心情分數"].mean(), 1)
-        st.markdown(f"**{text[lang]['avg_mood']}：** {avg_mood} {text[lang]['unit_score']}")
-        
-        # ✅ 用翻譯過的欄位名稱找出最常見天氣（df_display 是 rename 後的）
-        most_common_weather = df_display[text[lang]["column_weather"]].mode()[0]
-        st.markdown(f"**{text[lang]['common_weather']}：** {most_common_weather}")
-        
-        # 安全檢查：確認翻譯的欄位是否存在於 df_display 中
-        weather_col = text[lang]["column_weather"]
-        if weather_col in df_display.columns:
-            most_common_weather = df_display[weather_col].mode()[0]
+        # ➤ 原始欄位 df 拿來計算平均
+        if "心情分數" in df.columns:
+            avg_mood = round(df["心情分數"].mean(), 1)
+            st.markdown(f"**{text[lang]['avg_mood']}：** {avg_mood} {text[lang]['unit_score']}")
+        else:
+            st.warning("⚠️ 資料表裡沒有「心情分數」欄位，無法計算平均。")
+                # ➤ 翻譯後欄位名稱（df_display）找最常見天氣
+        if text[lang]["column_weather"] in df_display.columns:
+            most_common_weather = df_display[text[lang]["column_weather"]].mode()[0]
             st.markdown(f"**{text[lang]['common_weather']}：** {most_common_weather}")
         else:
-            st.markdown("⚠️ 找不到天氣欄位，請檢查資料或翻譯設定。")
+            st.warning("⚠️ 找不到翻譯後的天氣欄位，請檢查資料。")
+
+
 
 # ========== tab3: 心情趨勢 ==========ㄌ
 with tab3:
